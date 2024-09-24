@@ -1,6 +1,6 @@
-class ScheduleModel {
+class Schedule {
   final DateTime date;
-  final String content;
+  List<String> contents;
 
-  ScheduleModel({required this.date, required this.content});
+  Schedule({ required this.date, this.contents = const [] });
 }
