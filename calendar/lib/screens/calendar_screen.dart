@@ -1,3 +1,4 @@
+import 'package:calendar/screens/schedule_dialog.dart';
 import 'package:flutter/material.dart';
 import '../controllers/calendar_controller.dart';
 import '../controllers/schedule_controller.dart';
@@ -15,116 +16,6 @@ class _CalendarScreenState extends State<CalendarScreen> {
   void initState() {
     super.initState();
     _calendarController.initialize();
-  }
-
-  void showScheduleDialog(DateTime date) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            title: Column(
-              children: <Widget>[Text('${date.month}월 ${date.day}일')],
-            ),
-            content: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                if (_scheduleController.schedules[date]?.contents.isNotEmpty ??
-                    false)
-                  ..._scheduleController.schedules[date]!.contents
-                      .map((item) => Text(item))
-                      .toList()
-                else
-                  Text("일정이 없습니다."),
-                SizedBox(height: 20),
-                Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: () {
-                          showAddScheduleModal(date);
-                        },
-                        child: _scheduleController
-                                    .schedules[date]?.contents.isEmpty ==
-                                true
-                            ? Text('일정 등록')
-                            : Text('일정 추가')),
-                    //
-                    SizedBox(width: 30),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text('확인')),
-                  ],
-                ),
-              ],
-            ),
-          );
-        });
-  }
-
-  void showAddScheduleModal(DateTime date) {
-    TextEditingController _textController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          height: 450,
-          padding: EdgeInsets.all(16), // 적절한 패딩 추가
-          child: Column(
-            children: <Widget>[
-              Text(
-                "${date.year}-${date.month}-${date.day} 일정 추가",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-              SizedBox(height: 10), // 텍스트 필드와 버튼 사이의 공간
-              TextField(
-                controller: _textController,
-                decoration: InputDecoration(
-                  labelText: "일정 내용",
-                  hintText: "일정 내용을 입력하세요",
-                  border: OutlineInputBorder(),
-                ),
-                autofocus: true,
-              ),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context); // 닫기 버튼
-                    },
-                    child: Text("취소"),
-                  ),
-                  SizedBox(width: 10),
-                  TextButton(
-                    onPressed: () {
-                      if (_textController.text.isNotEmpty) {
-                        setState(() {
-                          _scheduleController.addSchedule(
-                              date, _textController.text);
-                        });
-                        Navigator.pop(context); // 저장 후 닫기
-                        Navigator.pop(context); // 다이얼로그 닫기
-                      }
-                    },
-                    child: Text("저장"),
-                  ),
-                ],
-              )
-            ],
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -204,7 +95,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                   onTap: () {
                     setState(() {
                       _calendarController.setSelectedDate(day);
-                      showScheduleDialog(day);
+                      showScheduleDialog(context, day, _scheduleController);
                     });
                   },
                   child: Container(
