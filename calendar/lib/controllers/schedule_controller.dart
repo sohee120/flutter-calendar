@@ -12,7 +12,17 @@ class ScheduleController {
     }
   }
 
+  void updateSchedule(DateTime date, int index, String newContent) {
+    if (schedules.containsKey(date)) {
+      schedules[date]!.contents[index] = newContent;  // 일정 수정
+    }
+  }
+
   Schedule? getSchedule(DateTime date) {
     return schedules[date];
+  }
+
+  String getDayName(int day) {
+    return Schedule.getDayName(day);
   }
 }
