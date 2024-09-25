@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import '../controllers/schedule_controller.dart';
 import './add_schedule_modal.dart';
 
-void showScheduleDialog(BuildContext context, DateTime date,ScheduleController scheduleController) {
+Future<void> showScheduleDialog(BuildContext context, DateTime date,ScheduleController scheduleController) async {
   showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext context)  {
         return AlertDialog(
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),

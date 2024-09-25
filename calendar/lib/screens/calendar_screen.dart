@@ -91,11 +91,10 @@ class _CalendarScreenState extends State<CalendarScreen> {
                     day.month == _calendarController.selectedDate.month;
 
                 return GestureDetector(
-                  onTap: () {
-                    setState(() {
+                  onTap: () async {
                       _calendarController.setSelectedDate(day);
                       showScheduleDialog(context, day, _scheduleController);
-                    });
+                      setState(() {});
                   },
                   child: Container(
                     margin: EdgeInsets.all(2.0), // 마진을 최소화하여 화면을 더 채우도록 함
