@@ -34,8 +34,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
             },
             child: Row(
               children: [
-                Text(
-                    "${_calendarController.selectedDate.year}년 ${_calendarController.getMonthName()}월"),
+                Text("${_calendarController.selectedDate.year}년 ${_calendarController.getMonthName()}월"),
                 Icon(Icons.arrow_drop_down)
               ],
             )),
@@ -139,6 +138,8 @@ class _CalendarScreenState extends State<CalendarScreen> {
                           child: Padding(
                             padding: EdgeInsets.all(2.0), // 좌측 상단에 여유 공간 추가
                             child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 if (_scheduleController
                                         .schedules[day]?.contents.isNotEmpty ??
