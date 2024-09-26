@@ -19,6 +19,12 @@ class CalendarModel {
     lastDayOfMonth.weekday = 1 (월요일)
     6 - lastDayOfMonth.weekday = 5
     lastDayOfMonth.add(Duration(days: 6 - lastDayOfMonth.weekday)); = 2024 09 30 의 5일뒤 : DateTime(2024, 10, 5)
+    
+    1. 해당 월의 첫 번째 날짜를 계산.
+    2. 해당 월의 마지막 날짜를 계산.
+    3. 첫 번째 날짜가 속한 주의 일요일로 이동.
+    4. 마지막 날짜가 속한 주의 토요일로 이동.
+    5. 첫 번째 일요일부터 마지막 토요일까지의 날짜 리스트를 생성해 반환.
     """;
 
     final firstDayOfCalendar = firstDayOfMonth.subtract(Duration(days: firstDayOfMonth.weekday % 7));

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../controllers/schedule_controller.dart';
 
 Future<void> showScheduleDetailScreen(BuildContext context, DateTime date, int idx,
-    ScheduleController scheduleController) async {
+    ScheduleController scheduleController, Function setStateCallback) async {
   showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -17,15 +17,16 @@ Future<void> showScheduleDetailScreen(BuildContext context, DateTime date, int i
                 children: <Widget>[
                   IconButton(
                     icon: Icon(Icons.edit),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.pop(context); // 세부 일정 모달 닫기
-                      showEditScheduleModal(context, date, idx, scheduleController); // 일정 수정 모달 열기
+                      await showEditScheduleModal(context, date, idx, scheduleController, setStateCallback); // 일정 수정 모달 열기
                     },
                   ),
                   IconButton(
                       icon: Icon(Icons.delete),
                       onPressed: () async {
-                        await showDeleteConfirmationDialog(context, date, idx, scheduleController);
+                        Navigator.pop(context);
+                        await showDeleteConfirmationDialog(context, date, idx, scheduleController, setStateCallback);
                       }
                     ),
                 ],
@@ -47,7 +48,7 @@ Future<void> showScheduleDetailScreen(BuildContext context, DateTime date, int i
 }
 
 Future<void> showDeleteConfirmationDialog(BuildContext context, DateTime date, int idx,
-    ScheduleController scheduleController) async {
+    ScheduleController scheduleController, Function setStateCallback) async {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -64,10 +65,12 @@ Future<void> showDeleteConfirmationDialog(BuildContext context, DateTime date, i
           TextButton(
             child: Text("삭제"),
             onPressed: () {
+              print(scheduleController.schedules[date]?.contents[idx]);
               scheduleController.removeSchedule(date, idx); // 인덱스 기반 삭제
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-              Navigator.of(context).pop(); // 모달 닫기
+              print(scheduleController.schedules[date]?.contents[idx]);
               Navigator.of(context).pop();
+              Navigator.pop(context);// 다이얼로그 닫기
+              setStateCallback();
             },
           ),
         ],
@@ -76,7 +79,8 @@ Future<void> showDeleteConfirmationDialog(BuildContext context, DateTime date, i
   );
 }
 
-void showEditScheduleModal(BuildContext context, DateTime date, int idx, ScheduleController scheduleController) {
+Future<void> showEditScheduleModal(BuildContext context, DateTime date, int idx,
+    ScheduleController scheduleController, Function setStateCallback) async  {
   TextEditingController _textController = TextEditingController(
     text: scheduleController.schedules[date]!.contents[idx],
   );
@@ -86,7 +90,7 @@ void showEditScheduleModal(BuildContext context, DateTime date, int idx, Schedul
     isScrollControlled: true,
     builder: (context) {
       return Padding(
-        padding: MediaQuery.of(context).viewInsets, // 키보드가 올라왔을 때 공간 확보
+        padding: MediaQuery.of(context).viewInsets, // 키보드가 올라왔을 때 공간
         child: Container(
           padding: EdgeInsets.all(16),
           height: 250,
@@ -120,7 +124,9 @@ void showEditScheduleModal(BuildContext context, DateTime date, int idx, Schedul
                     onPressed: () {
                       if (_textController.text.isNotEmpty) {
                         scheduleController.updateSchedule(date, idx, _textController.text); // 일정 수정
-                        Navigator.pop(context); // 모달 닫기 // 화면 갱신
+                        Navigator.pop(context);
+                        Navigator.pop(context);// 화면 갱신
+                        setStateCallback();
                       }
                     },
                     child: Text("저장"),

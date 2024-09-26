@@ -1,9 +1,10 @@
-import 'package:calendar/screens/schedule_detail_screen.dart';
+import 'schedule_detail_screen.dart';
 import 'package:flutter/material.dart';
 import '../controllers/schedule_controller.dart';
 import './add_schedule_modal.dart';
 
-Future<void> showScheduleDialog(BuildContext context, DateTime date,ScheduleController scheduleController) async {
+Future<void> showScheduleDialog(BuildContext context, DateTime date,
+    ScheduleController scheduleController, Function setStateCallback) async {
   showDialog(
       context: context,
       builder: (BuildContext context)  {
@@ -18,11 +19,12 @@ Future<void> showScheduleDialog(BuildContext context, DateTime date,ScheduleCont
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
+                // 일정이 있는 경우 일정들 표시
                 if (scheduleController.schedules[date]?.contents.isNotEmpty ??
                     false)
                   ...scheduleController.schedules[date]!.contents.asMap().entries.map((entry) =>
-                          GestureDetector(onTap: () {
-                            showScheduleDetailScreen(context, date, entry.key, scheduleController);
+                          GestureDetector(onTap: () async {
+                            await showScheduleDetailScreen(context, date, entry.key, scheduleController, setStateCallback);
                           }, child: Text('${entry.value}')))
                       .toList()
                 else
@@ -35,8 +37,7 @@ Future<void> showScheduleDialog(BuildContext context, DateTime date,ScheduleCont
                           showAddScheduleModal(context, date, scheduleController);
                         },
                         child: scheduleController
-                                    .schedules[date]?.contents.isEmpty ==
-                                true
+                                    .schedules[date]?.contents == null
                             ? Text('일정 등록')
                             : Text('일정 추가')),
                     //
